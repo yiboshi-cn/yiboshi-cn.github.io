@@ -766,7 +766,13 @@ ul{list-style:none}
         {kind:"软件工具",name:"图片格式 ICO 转换器",sub:"高清透明 PNG 转 ICO · 网页工具",text:"一键把高清透明 PNG 转为 Windows 标准多尺寸 ICO 图标，操作简单、即开即用。",linkText:"获取软件 ",img:"img11"},
         {kind:"软件工具",name:"宜泊诗云管家",sub:"经营管理一体化 · 电脑端",text:"集经营数据看板、进销存管理、财务核算与人事管理于一体，支持 AI 分析，助力门店与公司一体化经营。",linkText:"获取软件 ",img:"img12"}
       ]
-    }
+    },
+    // 自定义文字块：想在主页任意板块前/后加一段文字，就复制下面这行改内容
+    // （默认一行都没有=不显示。where 填想插在哪：如 "#products" 产品区、"#why" 为什么区、"#news" 新闻区、"#contact" 联系区；
+    //  position 填 "before" 插在它前面、"after" 插在它后面；kicker 小标签、title 标题、text 正文）
+    freeBlocks:[
+      // {where:"#products",position:"before",kicker:"最新动态",title:"示例：这里可以放一段公司介绍或公告",text:"正文内容写在这里。"}
+    ]
   };
   // ===== 产品图片库（product-img 里 img 字段引用这里的图）=====
   // 换图：把新图转成 base64 替换对应 imgXX 的值（或找助手帮你换）；
@@ -860,6 +866,26 @@ var PRODUCT_IMAGES={
     document.getElementById("products").querySelector(".container").innerHTML=html;
   }
 
+  function renderFreeBlocks(){
+    var blocks=SITE_CONTENT.freeBlocks||[];
+    for(var i=0;i<blocks.length;i++){
+      var bl=blocks[i];
+      var target=document.querySelector(bl.where);
+      if(!target){continue;}
+      var div=document.createElement("div");
+      div.className="section free-block";
+      div.innerHTML='<div class="container"><div class="section-head reveal">'
+        +'<p class="kicker">'+bl.kicker+'</p>'
+        +'<h2 class="section-title">'+bl.title+'</h2>'
+        +'<p class="section-desc">'+bl.text+'</p></div></div>';
+      if(bl.position==="before"){
+        target.parentNode.insertBefore(div,target);
+      }else{
+        target.parentNode.insertBefore(div,target.nextSibling);
+      }
+    }
+  }
+
   // ===== 新闻数据（以后在这里增删改，这就是新闻后台）=====
   // 新增：在数组最上面复制一行 {date:"日期",title:"标题",text:"正文"} 改内容即可；
   // 删除：删掉对应那一行；修改：直接改那一行的文字。
@@ -893,6 +919,7 @@ var PRODUCT_IMAGES={
   renderBusiness();
   renderWhy();
   renderProducts();
+  renderFreeBlocks();
   renderNews();
   document.querySelectorAll(".reveal").forEach(function(el){observer.observe(el)});
   newsMoreBtn.addEventListener("click",function(){
