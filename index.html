@@ -872,12 +872,20 @@ var PRODUCT_IMAGES={
       var bl=blocks[i];
       var target=document.querySelector(bl.where);
       if(!target){continue;}
+      // 样式：size / bold / align / color（小白友好档位，非法值自动忽略）
+      var sz=bl.size==="lg"?"1.45em":(bl.size==="sm"?"0.92em":"1.12em");
+      var w=bl.bold?"700":"400";
+      var al=bl.align==="left"?"left":"center";
+      var colorCss="";
+      if(typeof bl.color==="string" && /^[#0-9a-zA-Z]{3,24}$/.test(bl.color)){
+        colorCss=';color:'+bl.color;
+      }
       var div=document.createElement("div");
       div.className="section free-block";
       div.innerHTML='<div class="container"><div class="section-head reveal">'
-        +'<p class="kicker">'+bl.kicker+'</p>'
-        +'<h2 class="section-title">'+bl.title+'</h2>'
-        +'<p class="section-desc">'+bl.text+'</p></div></div>';
+        +'<p class="kicker" style="text-align:'+al+'">'+bl.kicker+'</p>'
+        +'<h2 class="section-title" style="font-size:'+sz+';font-weight:'+w+';text-align:'+al+colorCss+'">'+bl.title+'</h2>'
+        +'<p class="section-desc" style="text-align:'+al+'">'+bl.text+'</p></div></div>';
       if(bl.position==="before"){
         target.parentNode.insertBefore(div,target);
       }else{
