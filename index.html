@@ -89,6 +89,13 @@ ul{list-style:none}
 .section-dark .section-title{color:#F4F9FD}
 .section-dark .section-desc{color:rgba(237,245,243,.72)}
 .section-mist{background:var(--brand-mist)}
+.news-list{display:grid;gap:18px;max-width:880px;margin:0 auto}
+.news-item{display:flex;gap:22px;align-items:flex-start;background:var(--paper);border:1px solid var(--line);border-radius:var(--radius);padding:22px 26px;box-shadow:var(--shadow);transition:transform .25s ease,box-shadow .25s ease}
+.news-item:hover{transform:translateY(-3px);box-shadow:0 26px 56px rgba(11,59,97,.14)}
+.news-date{flex:0 0 auto;background:var(--brand-mist);color:var(--brand);font-weight:600;font-size:13px;padding:6px 12px;border-radius:8px;white-space:nowrap;margin-top:2px}
+.news-body h3{font-size:18px;color:var(--ink);margin-bottom:6px;font-weight:600}
+.news-body p{font-size:14px;color:var(--ink-soft);line-height:1.8;margin:0}
+@media(max-width:640px){.news-item{flex-direction:column;gap:10px}}
 
 /* 滚动揭示 */
 .reveal{opacity:0;transform:translateY(26px);transition:opacity .7s ease,transform .7s ease}
@@ -437,6 +444,7 @@ ul{list-style:none}
       <a href="#philosophy">品牌</a>
       <a href="#business">业务</a>
       <a href="#products">产品与服务</a>
+      <a href="#news">新闻动态</a>
       <a href="#contact" class="nav-cta">联系我们</a>
     </nav>
     <button class="nav-toggle" id="navToggle" aria-label="打开菜单" aria-expanded="false">
@@ -697,6 +705,33 @@ ul{list-style:none}
         <h3>用心服务</h3>
         <p>快速响应、认真跟进，让合作从头到尾都顺畅安心。</p>
       </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 新闻动态 ===== -->
+<section class="section section-mist" id="news">
+  <div class="container">
+    <div class="section-head reveal">
+      <p class="kicker" style="color:var(--brand)">新闻动态</p>
+      <h2 class="section-title">宜泊诗最新动态</h2>
+      <p class="section-desc">品牌动态、新品发布与公司公告，第一时间在这里同步。</p>
+    </div>
+    <div class="news-list">
+      <article class="news-item reveal">
+        <time class="news-date">2026-10-09</time>
+        <div class="news-body">
+          <h3>宜泊诗官网正式上线</h3>
+          <p>陕西福泽荣通有限公司旗下品牌「宜泊诗 YIBOSHI」官方网站正式上线，主站与备用站同步开放访问，欢迎各界朋友访问了解。</p>
+        </div>
+      </article>
+      <article class="news-item reveal">
+        <time class="news-date">2026-10-09</time>
+        <div class="news-body">
+          <h3>日化 + 软件 双主业布局</h3>
+          <p>宜泊诗同时布局日化清洁（红玫香韵洗衣液、厨房重油污净、香水爆炸盐）与软件服务（宜泊诗实验室、云管家、直播互动助手等），为客户提供一体化解决方案。</p>
+        </div>
+      </article>
     </div>
   </div>
 </section>
