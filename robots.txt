@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://yiboshi-cn.github.io/sitemap.xml
