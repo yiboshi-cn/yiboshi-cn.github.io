@@ -1169,7 +1169,6 @@ var PRODUCT_IMAGES={"img01": "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD
   function fmtDate(s){
     s=String(s||"").trim();
     if(!s) return "";
-    if(/^\d{4}-\d{2}-\d{2}$/.test(s)) return s+" 00:00:00";
     if(/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}$/.test(s)) return s+":00";
     return s;
   }
