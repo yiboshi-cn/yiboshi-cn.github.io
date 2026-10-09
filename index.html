@@ -94,7 +94,11 @@ ul{list-style:none}
 .news-item:hover{transform:translateY(-3px);box-shadow:0 26px 56px rgba(11,59,97,.14)}
 .news-date{flex:0 0 auto;background:var(--brand-mist);color:var(--brand);font-weight:600;font-size:13px;padding:6px 12px;border-radius:8px;white-space:nowrap;margin-top:2px}
 .news-body h3{font-size:18px;color:var(--ink);margin-bottom:6px;font-weight:600}
-.news-body p{font-size:14px;color:var(--ink-soft);line-height:1.8;margin:0}
+.news-body .news-text{font-size:14px;color:var(--ink-soft);line-height:1.8;margin:0}
+.news-detail{margin-top:12px;padding-top:12px;border-top:1px dashed var(--line)}
+.news-detail p{font-size:15px;color:var(--ink);line-height:1.9;margin:0 0 10px}
+.news-detail p:last-child{margin-bottom:0}
+.news-toggle{margin-top:10px;padding:6px 18px;font-size:13px}
 .news-item.hidden{display:none}
 .news-more-wrap{text-align:center;margin-top:28px}
 .news-more{padding:10px 30px}
@@ -1156,13 +1160,29 @@ var PRODUCT_IMAGES={"img01": "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD
   var newsMoreWrap=document.getElementById("newsMoreWrap");
   var newsMoreBtn=document.getElementById("newsMoreBtn");
   var newsExpanded=false;
+  function escHtml(s){
+    return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+  }
+  function detailHtml(d){
+    return String(d).split("\n").map(function(p){return "<p>"+escHtml(p)+"</p>"}).join("");
+  }
+  function fmtDate(s){
+    s=String(s||"").trim();
+    if(!s) return "";
+    if(/^\d{4}-\d{2}-\d{2}$/.test(s)) return s+" 00:00:00";
+    if(/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}$/.test(s)) return s+":00";
+    return s;
+  }
   function renderNews(){
     var html="";
     for(var i=0;i<YIBOSHI_NEWS.length;i++){
       var n=YIBOSHI_NEWS[i];
       html+='<article class="news-item reveal'+(i>=SHOW_NEWS?" hidden":"")+'">'
-         +'<time class="news-date">'+n.date+'</time>'
-         +'<div class="news-body"><h3>'+n.title+'</h3><p>'+n.text+'</p></div>'
+         +'<time class="news-date">'+fmtDate(n.date)+'</time>'
+         +'<div class="news-body"><h3>'+escHtml(n.title)+'</h3>'
+         +'<p class="news-text">'+escHtml(n.text)+'</p>'
+         +(n.detail?'<div class="news-detail" hidden></div><button type="button" class="btn news-toggle" data-i="'+i+'">阅读全文</button>':'')
+         +'</div>'
          +'</article>';
     }
     newsList.innerHTML=html;
@@ -1187,6 +1207,23 @@ var PRODUCT_IMAGES={"img01": "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD
     }
     var more=YIBOSHI_NEWS.length-SHOW_NEWS;
     newsMoreBtn.textContent=newsExpanded?"收起新闻":"查看更多新闻（还有 "+more+" 条）";
+  });
+
+  newsList.addEventListener("click",function(ev){
+    var btn=ev.target.closest(".news-toggle");
+    if(!btn) return;
+    var i=Number(btn.getAttribute("data-i"));
+    var n=YIBOSHI_NEWS[i];
+    if(!n||!n.detail) return;
+    var box=btn.parentElement.querySelector(".news-detail");
+    if(box.hidden){
+      box.innerHTML=detailHtml(n.detail);
+      box.hidden=false;
+      btn.textContent="收起全文";
+    }else{
+      box.hidden=true;
+      btn.textContent="阅读全文";
+    }
   });
 
   var form=document.getElementById("contactForm");
