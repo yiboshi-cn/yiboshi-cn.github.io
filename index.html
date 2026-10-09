@@ -158,7 +158,7 @@ ul{list-style:none}
 .hero{
   position:relative;min-height:92vh;display:flex;align-items:center;overflow:hidden;
   background:linear-gradient(180deg,#1E1F30 0%,#33344A 22%,#444158 40%,#46435E 58%,#575270 76%,#4C4258 100%);
-  background-image:url("hero-bg-user.jpg"),linear-gradient(180deg,#4A485E 0%,#44425B 42%,#54526C 62%,#4E5066 100%);
+  background-image:url("hero-bg-user.jpg"),linear-gradient(180deg, #4A485E, #4E5066);
   background-size:contain,cover;background-position:center,center;background-repeat:no-repeat,no-repeat;
   padding:150px 0 90px;
 }
@@ -295,6 +295,7 @@ ul{list-style:none}
 .product-card{
   background:var(--paper);border:1px solid var(--line);border-radius:var(--radius);
   padding:22px 22px 30px;transition:transform .3s ease,box-shadow .3s ease,border-color .3s ease;
+  display:block;text-decoration:none;color:inherit;
 }
 .product-card:hover{transform:translateY(-6px);box-shadow:var(--shadow);border-color:rgba(30,127,201,.4)}
 .p-img{
@@ -438,6 +439,9 @@ ul{list-style:none}
   .hero-meta{gap:20px}
   .business-card{padding:34px 26px}
 }
+
+.free-block-img{margin:0 auto;max-width:1200px;padding:0 24px}
+.free-block-img img{width:100%;height:auto;border-radius:14px;display:block}
 </style>
 </head>
 <body>
@@ -684,6 +688,8 @@ ul{list-style:none}
 </footer>
 
 <script>
+var HERO_COPY_SHOW = true;
+if(!HERO_COPY_SHOW){var _hc=document.querySelector(".hero-copy");if(_hc){_hc.style.display="none";}}
 (function(){
   "use strict";
   var nav=document.getElementById("nav");
@@ -937,8 +943,8 @@ ul{list-style:none}
       "where": "#top",
       "position": "after",
       "kicker": "新品上市",
-      "title": "线上线下全都支持7天无理由",
-      "text": "7天无理由从宜泊诗开始",
+      "title": "支持7天无理由",
+      "text": "7天无理由从宜泊诗开始,用心做事，用爱生活",
       "size": "md",
       "bold": true,
       "align": "center",
@@ -1009,15 +1015,17 @@ var PRODUCT_IMAGES={"img01": "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD
       var it=pr.items[i];
       if(it.show===false){continue;} // 后台可"下架"：数据保留但官网不显示
       var img=PRODUCT_IMAGES[it.img]||"";
-      html+='<article class="product-card reveal">'
+      var href=typeof it.link==="string"&&it.link?it.link:"#contact";
+      var ext=/^https?:\/\//i.test(href);
+      html+='<a class="product-card reveal" href="'+href+'"'+(ext?' target="_blank" rel="noopener"':'')+'>'
         +'<div class="p-img"><span class="p-tag">'+it.kind+'</span>'
         +'<img src="'+img+'" alt="'+it.name+'"></div>'
         +'<h3>'+it.name+'</h3>'
         +'<p class="p-sub">'+it.sub+'</p>'
         +'<p>'+it.text+'</p>'
-        +'<a class="p-more" href="#contact">'+it.linkText
-        +'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a>'
-        +'</article>';
+        +'<span class="p-more">'+it.linkText
+        +'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>'
+        +'</a>';
     }
     html+='</div>'
       +'<p class="product-note reveal">'
@@ -1042,10 +1050,18 @@ var PRODUCT_IMAGES={"img01": "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD
       }
       var div=document.createElement("div");
       div.className="section free-block";
-      div.innerHTML='<div class="container"><div class="section-head reveal">'
-        +'<p class="kicker" style="text-align:'+al+'">'+bl.kicker+'</p>'
-        +'<h2 class="section-title" style="font-size:'+sz+';font-weight:'+w+';text-align:'+al+colorCss+'">'+bl.title+'</h2>'
-        +'<p class="section-desc" style="text-align:'+al+'">'+bl.text+'</p></div></div>';
+      if(bl.image){
+        var imgHtml='<img src="'+bl.image+'" alt="'+bl.kicker+'" style="display:block;width:100%;height:auto;border-radius:14px">';
+        if(typeof bl.link==="string" && bl.link){
+          imgHtml='<a href="'+bl.link+'" target="_blank" rel="noopener" style="display:block">'+imgHtml+'</a>';
+        }
+        div.innerHTML+='<div class="free-block-img reveal">'+imgHtml+'</div>';
+      }else{
+        div.innerHTML+='<div class="container"><div class="section-head reveal">'
+          +'<p class="kicker" style="text-align:'+al+'">'+bl.kicker+'</p>'
+          +'<h2 class="section-title" style="font-size:'+sz+';font-weight:'+w+';text-align:'+al+colorCss+'">'+bl.title+'</h2>'
+          +'<p class="section-desc" style="text-align:'+al+'">'+bl.text+'</p></div></div>';
+      }
       if(bl.position==="before"){
         target.parentNode.insertBefore(div,target);
       }else{
