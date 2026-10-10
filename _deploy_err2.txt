@@ -1,2 +1,0 @@
-publishing to app app_17fkwc79jpe (from --app-id)
-release 7694568288685657026 accepted (status publishing); poll with `lark-cli apps +release-get`
