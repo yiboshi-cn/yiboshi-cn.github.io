@@ -1,0 +1,13 @@
+{
+  "ok": true,
+  "identity": "user",
+  "data": {
+    "app_id": "app_17fkwc79jpe",
+    "built": false,
+    "file_count": 3,
+    "poll_hint": "lark-cli apps +release-get --app-id app_17fkwc79jpe --release-id 7694568288685657026",
+    "release_id": "7694568288685657026",
+    "status": "publishing",
+    "zip_size_bytes": 1948696
+  }
+}
