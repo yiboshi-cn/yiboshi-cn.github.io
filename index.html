@@ -706,7 +706,7 @@ var HERO_PANEL_OFF_X = 0;
 var HERO_PANEL_OFF_Y = 0;
 var HERO_PANEL_PAD_X = 0;
 var HERO_PANEL_PAD_Y = 0;
-var HERO_BG_OFF_X = 240;
+var HERO_BG_OFF_X = 140;
 var HERO_BG_OFF_Y = 0;
 if(!HERO_COPY_SHOW){var _hc=document.querySelector(".hero-copy");if(_hc){_hc.style.display="none";}}
 if(!HERO_MASK_SHOW){var _he=document.querySelector(".hero");if(_he){_he.classList.add("no-mask");}}
@@ -1142,7 +1142,8 @@ var PRODUCT_IMAGES={"img01": "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD
     "title": "AI 配方是怎么验证的",
     "text": "宜泊诗实验室的每一版配方，都要经过打样、实测与数据回验。大量实验数据的积累，让算法不只是会生成配方，更知道哪些配方经得起检验。",
     "detail": "一款日化配方从算法里生成，只是起点。真正决定它能不能上市，是后面的验证环节。\n\n宜泊诗实验室的配方反推算法，给出一版配方方案之后，并不会直接进入生产。它会先走完一条完整的验证链路：打样、实测、数据回验。每一步，都有记录。\n\n打样验证：先做出来，再说好不好\n\n算法输出的配方，第一步是打样。把原料按配比称量、混合、制备，做出实物样品。这一环节解决的是「纸上配方能不能落地」——原料是否可得、工艺是否可行、体系是否稳定。\n\n打样不是一次就过。配方的触感、泡沫、pH、稳定性，每一项都要实测。哪一项不达标，工程师就把数据带回给算法，调整参数后再打样。这样的循环，一次配方开发往往要重复很多轮。\n\n数据回验：每一次验证，都变成算法的经验\n\n传统研发里，打样失败就重来，经验留在老师傅脑子里。宜泊诗实验室不一样：每一次打样和实测的数据，都会被记录下来，回流进算法。\n\n「这个配方在高温下不稳定」——这不是一句结论，而是一条结构化数据：温度区间、成分比例、失效表现，全部入库。下次算法再生成相似配方时，会主动避开这个坑。\n\n这就是回验的价值：实验做得越多，算法越懂配方。\n\n实验数据积累：准确率的地基\n\n反推算法 96.8% 的匹配率，不是算出来的，是大量实验数据撑起来的。每一份打样记录、每一轮实测数据、每一个修正参数，都是准确率的组成部分。\n\n对宜泊诗来说，实验数据不是一次性的研发成本，而是越攒越厚的资产。数据越多，配方越准，产品越稳。\n\n配方好不好，算法说了不算，实验说了算。宜泊诗实验室坚持把每一版配方都放进实验里检验，让「AI 做配方」这件事，每一步都有数据可查。"
-  },];
+  }
+];
   var SHOW_NEWS=3; // 首页默认显示几条新闻
   var newsList=document.getElementById("newsList");
   var newsMoreWrap=document.getElementById("newsMoreWrap");
@@ -1213,18 +1214,42 @@ var PRODUCT_IMAGES={"img01": "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD
     }
   });
 
+  // ===== 留言提交：发给「官网管理助手」收集（V5.7）=====
+  // 官网托管在 GitHub Pages（纯静态），访客浏览器访问不到你电脑的 8787，
+  // 所以当前只有本地预览 / 内网能真正收集；以后把同步服务部署到公网后，
+  // 把下面 MESSAGE_ENDPOINT 改成公网地址即可直接收线上留言（改动后记得同步两个站）。
+  var MESSAGE_ENDPOINT="http://127.0.0.1:8787/api/message";
   var form=document.getElementById("contactForm");
   form.addEventListener("submit",function(e){
     e.preventDefault();
     var btn=form.querySelector(".btn");
     var old=btn.textContent;
-    btn.textContent="已收到，感谢留言";
+    var data={
+      name:(form.querySelector('[name="name"]')||{}).value||"",
+      contact:(form.querySelector('[name="contact"]')||{}).value||"",
+      message:(form.querySelector('[name="message"]')||{}).value||""
+    };
     btn.disabled=true;
-    setTimeout(function(){
-      btn.textContent=old;
-      btn.disabled=false;
-      form.reset();
-    },2400);
+    btn.textContent="正在提交…";
+    fetch(MESSAGE_ENDPOINT,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(data)})
+      .then(function(r){return r.json()})
+      .then(function(d){
+        if(d&&d.ok){
+          btn.textContent="已收到，感谢留言";
+          form.reset();
+          setTimeout(function(){btn.textContent=old;btn.disabled=false},2400);
+        }else{
+          btn.textContent="提交未成功，请直接电话联系我们";
+          btn.disabled=false;
+          setTimeout(function(){btn.textContent=old},2600);
+        }
+      })
+      .catch(function(){
+        // 连不上收集服务（线上访客常见）：如实提示，不假装收到
+        btn.textContent="留言暂未送达，请直接电话联系我们";
+        btn.disabled=false;
+        setTimeout(function(){btn.textContent=old},2600);
+      });
   });
 })();
 </script>
