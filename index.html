@@ -1138,6 +1138,12 @@ var PRODUCT_IMAGES={"img01": "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD
   // 页面会自动按从新到旧显示，超过 3 条自动折叠成「查看更多新闻」。
   var YIBOSHI_NEWS=[
   {
+    "date": "2026-10-11 15:14:00",
+    "title": "第一个落地产品：从实验室走出来的洗衣液",
+    "text": "宜泊诗实验室的第一个落地产品，是红玫香韵洗衣液：配方从算法里起步，打样反复验证，最终走上货架。产品落地的每一步，都是实验室能力的试金石。",
+    "detail": "实验室的第一款产品，为什么是洗衣液？\n\n这个问题的答案，藏在日常里。洗衣液是每个家庭都要用的日化品，也是检验配方能力最直接的赛道——人人都用、人人能感知、好坏一洗便知。\n\n所以宜泊诗实验室把第一个落地产品，选在了洗衣液上。\n\n配方：从算法里起步\n\n红玫香韵洗衣液的配方，不是从某一瓶「对标产品」抄出来的，而是从反推算法里起步的：明确目标——去污、留香、洗护柔顺；检索匹配——从配方库与原料库里找方案；生成候选——算法给出多条路线；工程师微调——把候选打磨成可打样的版本。\n\n目标是什么，算法就朝什么方向反推。这不是碰运气式研发，而是先想清楚「要什么」，再算「怎么做」。\n\n打样：反复验证才敢定型\n\n配方落到打样，才是真正见真章的时候。去污力够不够、泡沫合不合适、低温下会不会变浊、存放三个月会不会分层——每一项都要过实测。\n\n哪一项不过，数据就回流给算法，调整后再来。反反复复，直到每一项都站得住。\n\n正是这样一遍遍验证，才有了后来的质检一次通过、性能稳定如一。\n\n落地：实验室能力的产品答卷\n\n一款洗衣液，从算法到货架，走的不是捷径，是一条条实验数据铺出来的路。\n\n对我们来说，红玫香韵不只是货架上的产品，更是实验室能力的第一次产品化验证：算法能不能落地、流程能不能闭环、品质能不能稳定——答案都在这一瓶里。\n\n用数据做配方，用实验做验证，用产品做答卷。宜泊诗的第一款产品，就是这样走出来的。"
+  },
+  {
     "date": "2026-10-10 17:30:00",
     "title": "AI 配方是怎么验证的",
     "text": "宜泊诗实验室的每一版配方，都要经过打样、实测与数据回验。大量实验数据的积累，让算法不只是会生成配方，更知道哪些配方经得起检验。",
@@ -1214,27 +1220,42 @@ var PRODUCT_IMAGES={"img01": "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD
     }
   });
 
-  // ===== 留言提交：发给「官网管理助手」收集（V5.7）=====
-  // 官网托管在 GitHub Pages（纯静态），访客浏览器访问不到你电脑的 8787，
-  // 所以当前只有本地预览 / 内网能真正收集；以后把同步服务部署到公网后，
-  // 把下面 MESSAGE_ENDPOINT 改成公网地址即可直接收线上留言（改动后记得同步两个站）。
-  var MESSAGE_ENDPOINT="http://127.0.0.1:8787/api/message";
+  // ===== 留言提交：直接发到 Gitee Issues（永久免费，线上访客也能收）=====
+  // 仓库：tianxu52100/yiboshi-messages（私有，只有你能看到）
+  // API 文档：POST /v5/repos/{owner}/issues（repo 放 body 里）
+  var GITEE_TOKEN="19f514881ba79b847b65e8c4de394b67";
+  var GITEE_OWNER="tianxu52100";
+  var GITEE_REPO="yiboshi-messages";  // 只传仓库名，不带 owner 前缀
   var form=document.getElementById("contactForm");
   form.addEventListener("submit",function(e){
     e.preventDefault();
     var btn=form.querySelector(".btn");
     var old=btn.textContent;
-    var data={
-      name:(form.querySelector('[name="name"]')||{}).value||"",
-      contact:(form.querySelector('[name="contact"]')||{}).value||"",
-      message:(form.querySelector('[name="message"]')||{}).value||""
-    };
+    var name=(form.querySelector('[name="name"]')||{}).value||"";
+    var contact=(form.querySelector('[name="contact"]')||{}).value||"";
+    var message=(form.querySelector('[name="message"]')||{}).value||"";
+    var now=new Date();
+    var ts=now.getFullYear()+"-"+String(now.getMonth()+1).padStart(2,"0")+"-"+String(now.getDate()).padStart(2,"0")+" "+String(now.getHours()).padStart(2,"0")+":"+String(now.getMinutes()).padStart(2,"0");
     btn.disabled=true;
     btn.textContent="正在提交…";
-    fetch(MESSAGE_ENDPOINT,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(data)})
+    // 组装 Gitee Issue：标题=访客姓名+时间，内容=详细信息
+    var issueTitle="访客留言："+name+"（"+ts+")";
+    var issueBody="**姓名**："+name+"\n\n**联系方式**："+contact+"\n\n**留言内容**：\n"+message+"\n\n---\n提交时间："+ts+"\n来源：宜泊诗官网";
+    // Gitee 创建 Issue 端点：/repos/{owner}/issues，repo 参数放 body 里
+    fetch("https://gitee.com/api/v5/repos/"+GITEE_OWNER+"/issues",{
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({
+        access_token:GITEE_TOKEN,
+        repo:GITEE_REPO,
+        title:issueTitle,
+        body:issueBody,
+        labels:"新留言"
+      })
+    })
       .then(function(r){return r.json()})
       .then(function(d){
-        if(d&&d.ok){
+        if(d&&d.number){  // Gitee Issue 创建成功会返回 number（Issue 编号）
           btn.textContent="已收到，感谢留言";
           form.reset();
           setTimeout(function(){btn.textContent=old;btn.disabled=false},2400);
@@ -1245,7 +1266,6 @@ var PRODUCT_IMAGES={"img01": "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD
         }
       })
       .catch(function(){
-        // 连不上收集服务（线上访客常见）：如实提示，不假装收到
         btn.textContent="留言暂未送达，请直接电话联系我们";
         btn.disabled=false;
         setTimeout(function(){btn.textContent=old},2600);
